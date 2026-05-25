@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>LPP Saarbrücken SecureNet</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Arial,sans-serif;
+background:#0a1016;
+color:white;
+}
+
+.login{
+width:400px;
+margin:120px auto;
+background:#151d27;
+padding:30px;
+border-radius:14px;
+box-shadow:0 0 20px rgba(0,0,0,0.5);
+}
+
+.login h1{
+text-align:center;
+margin-bottom:25px;
+color:#0d6efd;
+}
+
+input,
+select,
+textarea,
+button{
+width:100%;
+padding:12px;
+margin-top:12px;
+border:none;
+border-radius:8px;
+font-size:15px;
+}
+
+input,
+select,
+textarea{
+background:#26303c;
+color:white;
+}
+
+button{
+background:#0d6efd;
+color:white;
+cursor:pointer;
+font-weight:bold;
+}
+
+button:hover{
+background:#0b5ed7;
+}
+
+.layout{
+display:none;
+}
+
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+width:250px;
+height:100vh;
+background:#111820;
+padding:20px;
+border-right:2px solid #0d6efd;
+}
+
+.logo{
+font-size:24px;
+text-align:center;
+margin-bottom:30px;
+font-weight:bold;
+color:#0d6efd;
+}
+
+.menu button{
+margin-top:10px;
+background:#1d2733;
+}
+
+.menu button:hover{
+background:#2a3644;
+}
+
+.content{
+margin-left:270px;
+padding:30px;
+}
+
+.page{
+display:none;
+}
+
+.active{
+display:block;
+}
+
+.card{
+background:#151d27;
+padding:25px;
+border-radius:14px;
+margin-bottom:20px;
+}
+
+.card h2{
+margin-bottom:20px;
+color:#0d6efd;
+}
+
+.result{
+background:#0f151d;
+padding:20px;
+margin-top:20px;
+border-radius:10px;
+font-size:22px;
+text-align:center;
+font-weight:bold;
+color:#00ff88;
+}
+
+.file{
+background:#202a36;
+padding:12px;
+border-radius:8px;
+margin-top:10px;
+}
+
+.user{
+background:#202a36;
+padding:15px;
+border-radius:10px;
+margin-top:12px;
+}
+
+.small{
+color:#9ba7b4;
+margin-top:10px;
+}
+
+textarea{
+height:180px;
+resize:none;
+}
+
+.deleteBtn{
+background:#dc3545;
+}
+
+.deleteBtn:hover{
+background:#bb2d3b;
+}
+
+.copyBtn{
+background:#198754;
+}
+
+.copyBtn:hover{
+background:#157347;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+
+<div class="login" id="loginBox">
+
+<h1>LPP SecureNet</h1>
+
+<input type="text"
+id="username"
+placeholder="Benutzername">
+
+<input type="password"
+id="password"
+placeholder="Passwort">
+
+<button onclick="login()">
+Anmelden
+</button>
+
+</div>
+
+<!-- SYSTEM -->
+
+<div class="layout" id="layout">
+
+<div class="sidebar">
+
+<div class="logo">
+LPP NET
+</div>
+
+<div class="menu">
+
+<button onclick="showPage('dashboard')">
+Dashboard
+</button>
+
+<button onclick="showPage('newakte')">
+Neue Akte
+</button>
+
+<button onclick="showPage('aktenschrank')">
+Aktenschrank
+</button>
+
+<button onclick="showPage('ermittlungen')">
+Ermittlungen
+</button>
+
+<button id="adminMenu"
+style="display:none;"
+onclick="showPage('admin')">
+Administration
+</button>
+
+<button onclick="logout()">
+Logout
+</button>
+
+</div>
+
+</div>
+
+<div class="content">
+
+<!-- DASHBOARD -->
+
+<div class="page active"
+id="dashboard">
+
+<div class="card">
+
+<h2>Dashboard</h2>
+
+<p>
+Willkommen im internen Ermittlungsportal
+der Landespolizei Saarbrücken.
+</p>
+
+<div class="small">
+Geschütztes Ermittlungsnetzwerk
+</div>
+
+</div>
+
+</div>
+
+<!-- NEUE AKTE -->
+
+<div class="page"
+id="newakte">
+
+<div class="card">
+
+<h2>Neue Ermittlungsakte</h2>
+
+<select id="gesetz">
+
+<option>STGB</option>
+<option>STPO</option>
+<option>BTMG</option>
+<option>WAFFG</option>
+<option>OWIG</option>
+<option>JGG</option>
+<option>BPOLG</option>
+<option>BKAG</option>
+<option>STVG</option>
+<option>STVO</option>
+<option>FEV</option>
+<option>DSGVO</option>
+<option>TKG</option>
+<option>GWG</option>
+<option>AUFENTHG</option>
+<option>ASYLG</option>
+
+</select>
+
+<input type="text"
+id="paragraph"
+placeholder="Paragraph">
+
+<input type="text"
+id="titel"
+placeholder="Vorgang / Titel">
+
+<button onclick="createAkte()">
+Akte erstellen
+</button>
+
+<div class="result"
+id="result">
+Noch keine Akte erstellt
+</div>
+
+<button class="copyBtn"
+onclick="copyAZ()">
+Aktenzeichen kopieren
+</button>
+
+</div>
+
+</div>
+
+<!-- AKTENSCHRANK -->
+
+<div class="page"
+id="aktenschrank">
+
+<div class="card">
+
+<h2>Aktenschrank</h2>
+
+<div class="small">
+Akte nur über Aktenzeichen öffnen
+</div>
+
+<input type="text"
+id="searchAZ"
+placeholder="Aktenzeichen">
+
+<button onclick="openByAZ()">
+Akte öffnen
+</button>
+
+</div>
+
+<div class="card"
+id="akteBox"
+style="display:none;">
+
+<h2 id="akteTitle"></h2>
+
+<textarea id="akteText"
+placeholder="Ermittlungsnotizen"></textarea>
+
+<input type="file"
+id="akteFiles"
+multiple>
+
+<button onclick="saveAkte()">
+Akte speichern
+</button>
+
+<div id="fileList"></div>
+
+</div>
+
+</div>
+
+<!-- ERMITTLUNGEN -->
+
+<div class="page"
+id="ermittlungen">
+
+<div class="card">
+
+<h2>Ermittlungen</h2>
+
+<div id="ermittlungsListe"></div>
+
+</div>
+
+</div>
+
+<!-- ADMIN -->
+
+<div class="page"
+id="admin">
+
+<div class="card">
+
+<h2>Benutzer erstellen</h2>
+
+<input type="text"
+id="newUser"
+placeholder="Benutzername">
+
+<select id="newRole">
+
+<option>ermittler</option>
+<option>leitung</option>
+<option>admin</option>
+
+</select>
+
+<button onclick="generatePassword()">
+Passwort generieren
+</button>
+
+<input type="text"
+id="generatedPassword"
+placeholder="Generiertes Passwort"
+readonly>
+
+<button onclick="createUser()">
+Benutzer erstellen
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>Benutzerverwaltung</h2>
+
+<div id="userList"></div>
+
+</div>
+
+<div class="card">
+
+<h2>Akte löschen</h2>
+
+<input type="text"
+id="deleteAZ"
+placeholder="Aktenzeichen">
+
+<button class="deleteBtn"
+onclick="deleteAkte()">
+Akte löschen
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+let users =
+JSON.parse(localStorage.getItem("users")) || {
+
+admin:{
+password:"LPP-saar-26",
+role:"admin"
+}
+
+};
+
+let akten =
+JSON.parse(localStorage.getItem("akten")) || {};
+
+let currentUser = "";
+let currentRole = "";
+let currentAkte = "";
+
+function saveData(){
+
+localStorage.setItem(
+"users",
+JSON.stringify(users)
+);
+
+localStorage.setItem(
+"akten",
+JSON.stringify(akten)
+);
+
+}
+
+function login(){
+
+let username =
+document.getElementById("username").value;
+
+let password =
+document.getElementById("password").value;
+
+if(
+users[username] &&
+users[username].password === password
+){
+
+currentUser = username;
+currentRole = users[username].role;
+
+document.getElementById("loginBox")
+.style.display = "none";
+
+document.getElementById("layout")
+.style.display = "block";
+
+if(currentRole === "admin"){
+
+document.getElementById("adminMenu")
+.style.display = "block";
+
+}
+
+loadUsers();
+loadErmittlungen();
+
+} else {
+
+alert("Ungültige Anmeldedaten");
+
+}
+
+}
+
+function logout(){
+
+location.reload();
+
+}
+
+function showPage(page){
+
+document.querySelectorAll(".page")
+.forEach(p => {
+
+p.classList.remove("active");
+
+});
+
+document.getElementById(page)
+.classList.add("active");
+
+}
+
+function createAkte(){
+
+let gesetz =
+document.getElementById("gesetz").value;
+
+let paragraph =
+document.getElementById("paragraph").value;
+
+let titel =
+document.getElementById("titel").value;
+
+let year =
+new Date().getFullYear()
+.toString()
+.slice(-2);
+
+let number =
+Math.floor(Math.random()*999999)
+.toString()
+.padStart(6,'0');
+
+let az =
+`LP-SBR-${gesetz}-${paragraph}-${year}-${number}`;
+
+akten[az] = {
+
+titel:titel,
+bearbeiter:currentUser,
+notiz:"",
+files:[],
+status:"Offen"
+
+};
+
+saveData();
+
+document.getElementById("result")
+.innerHTML = az;
+
+openAkte(az);
+
+loadErmittlungen();
+
+}
+
+function copyAZ(){
+
+let az =
+document.getElementById("result")
+.innerText;
+
+navigator.clipboard.writeText(az);
+
+alert("Aktenzeichen kopiert");
+
+}
+
+function openByAZ(){
+
+let az =
+document.getElementById("searchAZ").value;
+
+if(akten[az]){
+
+openAkte(az);
+
+} else {
+
+alert("Akte nicht gefunden");
+
+}
+
+}
+
+function openAkte(az){
+
+currentAkte = az;
+
+let akte =
+akten[az];
+
+document.getElementById("akteBox")
+.style.display = "block";
+
+document.getElementById("akteTitle")
+.innerHTML = az;
+
+document.getElementById("akteText")
+.value = akte.notiz;
+
+renderFiles();
+
+}
+
+function saveAkte(){
+
+let akte =
+akten[currentAkte];
+
+akte.notiz =
+document.getElementById("akteText").value;
+
+let files =
+document.getElementById("akteFiles").files;
+
+for(let file of files){
+
+akte.files.push(file.name);
+
+}
+
+saveData();
+
+renderFiles();
+
+alert("Akte gespeichert");
+
+}
+
+function renderFiles(){
+
+let akte =
+akten[currentAkte];
+
+let box =
+document.getElementById("fileList");
+
+box.innerHTML = "";
+
+akte.files.forEach(file => {
+
+box.innerHTML += `
+<div class="file">
+📁 ${file}
+</div>
+`;
+
+});
+
+}
+
+function loadErmittlungen(){
+
+let box =
+document.getElementById("ermittlungsListe");
+
+box.innerHTML = "";
+
+for(let az in akten){
+
+box.innerHTML += `
+<div class="file">
+<b>${az}</b><br>
+${akten[az].titel}<br>
+Bearbeiter:
+${akten[az].bearbeiter}
+</div>
+`;
+
+}
+
+}
+
+function generatePassword(){
+
+let chars =
+"ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz123456789@$!";
+
+let password = "";
+
+for(let i = 0; i < 14; i++){
+
+password +=
+chars.charAt(
+Math.floor(Math.random() * chars.length)
+);
+
+}
+
+document.getElementById(
+"generatedPassword"
+).value = password;
+
+}
+
+function createUser(){
+
+if(currentRole !== "admin") return;
+
+let user =
+document.getElementById("newUser").value;
+
+let pass =
+document.getElementById("generatedPassword").value;
+
+let role =
+document.getElementById("newRole").value;
+
+if(user === "" || pass === ""){
+
+alert("Benutzer und Passwort benötigt");
+
+return;
+
+}
+
+users[user] = {
+
+password:pass,
+role:role
+
+};
+
+saveData();
+
+loadUsers();
+
+alert(
+`Benutzer erstellt\n\nBenutzer: ${user}\nPasswort: ${pass}`
+);
+
+}
+
+function loadUsers(){
+
+let box =
+document.getElementById("userList");
+
+box.innerHTML = "";
+
+for(let user in users){
+
+box.innerHTML += `
+<div class="user">
+
+<b>${user}</b><br>
+
+Rolle:
+${users[user].role}
+
+<br><br>
+
+Passwort:
+${users[user].password}
+
+<br><br>
+
+<button class="deleteBtn"
+onclick="deleteUser('${user}')">
+
+Benutzer löschen
+
+</button>
+
+</div>
+`;
+
+}
+
+}
+
+function deleteUser(user){
+
+if(user === "admin"){
+
+alert("Admin kann nicht gelöscht werden");
+
+return;
+
+}
+
+delete users[user];
+
+saveData();
+
+loadUsers();
+
+alert("Benutzer gelöscht");
+
+}
+
+function deleteAkte(){
+
+if(currentRole !== "admin") return;
+
+let az =
+document.getElementById("deleteAZ").value;
+
+if(akten[az]){
+
+delete akten[az];
+
+saveData();
+
+loadErmittlungen();
+
+alert("Akte gelöscht");
+
+} else {
+
+alert("Akte nicht gefunden");
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
